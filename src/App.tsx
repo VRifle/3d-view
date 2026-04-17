@@ -1,7 +1,10 @@
 import React, { useState, Suspense, Component, ErrorInfo, ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stage, useGLTF, Center } from '@react-three/drei';
-import { Box } from 'lucide-react';
+import { XR, createXRStore } from '@react-three/xr';
+import { Box, Headset } from 'lucide-react';
+
+const store = createXRStore();
 
 // Error Boundary to catch invalid .glb files and prevent the app from crashing
 interface ErrorBoundaryProps {
@@ -74,6 +77,18 @@ export default function App() {
 
   return (
     <div className="w-screen h-screen bg-white text-neutral-900 font-sans overflow-hidden relative">
+      {/* MR Button Overlay (Top Left for Meta Quest) */}
+      <div className="absolute top-6 left-6 z-20">
+        <button
+          onClick={() => store.enterAR()}
+          className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600/90 backdrop-blur-md hover:bg-indigo-700 text-white font-medium rounded-full shadow-xl transition-all hover:scale-105 pointer-events-auto border border-indigo-500"
+        >
+          <Headset className="w-5 h-5" />
+          <span className="text-sm hidden sm:inline">In MR ansehen (Meta Quest)</span>
+          <span className="text-sm sm:hidden">MR</span>
+        </button>
+      </div>
+
       {/* AR Button Overlay (Top Right) */}
       <div className="absolute top-6 right-6 z-20">
         <a
@@ -114,14 +129,16 @@ export default function App() {
           </div>
         }>
           <Canvas shadows camera={{ position: [0, 0, 5], fov: 50 }}>
-            <color attach="background" args={['#ffffff']} />
-            <Suspense fallback={null}>
-              <Stage environment="city" intensity={0.5} adjustCamera center={{ precise: true }}>
-                <Model url={MODEL_URL} />
-              </Stage>
-            </Suspense>
-            {/* OrbitControls enables rotating with the mouse */}
-            <OrbitControls makeDefault autoRotate autoRotateSpeed={0.5} enablePan={false} enableZoom={false} target={[0, 0, 0]} />
+            <XR store={store}>
+              <color attach="background" args={['#ffffff']} />
+              <Suspense fallback={null}>
+                <Stage environment="city" intensity={0.5} adjustCamera center={{ precise: true }}>
+                  <Model url={MODEL_URL} />
+                </Stage>
+              </Suspense>
+              {/* OrbitControls enables rotating with the mouse */}
+              <OrbitControls makeDefault autoRotate autoRotateSpeed={0.5} enablePan={false} enableZoom={false} target={[0, 0, 0]} />
+            </XR>
           </Canvas>
         </ErrorBoundary>
       </main>
