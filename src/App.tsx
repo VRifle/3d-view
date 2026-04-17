@@ -37,8 +37,13 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 // The actual 3D Model component
 function Model({ url }: { url: string }) {
   const { scene } = useGLTF(url);
-  // Wenn das Modell flach liegt, hilft meistens eine Drehung um 90 Grad (Math.PI / 2) auf der X-Achse
-  return <primitive object={scene} rotation={[Math.PI / 2, 0, 0]} />;
+  // Wenn das Modell flach liegt, hilft eine Drehung auf der X-Achse.
+  // Wir packen es in eine <group>, damit die Zentrierung (Stage) sauber funktioniert.
+  return (
+    <group rotation={[Math.PI / 2, 0, 0]}>
+      <primitive object={scene} />
+    </group>
+  );
 }
 
 export default function App() {
