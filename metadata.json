@@ -1,0 +1,6 @@
+{
+  "name": "vrifle-3d.de Viewer",
+  "description": "Ein simpler 3D-Viewer für .glb Modelle zum Drehen und Zoomen.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
